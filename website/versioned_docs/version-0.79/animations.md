@@ -21,11 +21,15 @@ For example, a container view that fades in when it is mounted may look like thi
 <TabItem value="javascript">
 
 ```SnackPlayer ext=js&supportedPlatforms=ios,android
-import React, {useEffect} from 'react';
-import {Animated, Text, View, useAnimatedValue} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {Animated, Text, View} from 'react-native';
+import type {PropsWithChildren} from 'react';
+import type {ViewStyle} from 'react-native';
 
-const FadeInView = props => {
-  const fadeAnim = useAnimatedValue(0); // Initial value for opacity: 0
+type FadeInViewProps = PropsWithChildren<{style: ViewStyle}>;
+
+const FadeInView: React.FC<FadeInViewProps> = props => {
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -36,17 +40,16 @@ const FadeInView = props => {
   }, [fadeAnim]);
 
   return (
-    <Animated.View // Special animatable View
+    <Animated.View
       style={{
         ...props.style,
-        opacity: fadeAnim, // Bind opacity to animated value
+        opacity: fadeAnim,
       }}>
       {props.children}
     </Animated.View>
   );
 };
 
-// You can then use your `FadeInView` in place of a `View` in your components:
 export default () => {
   return (
     <View
@@ -68,6 +71,7 @@ export default () => {
     </View>
   );
 };
+
 ```
 
 </TabItem>
